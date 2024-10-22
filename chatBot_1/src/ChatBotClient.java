@@ -2,34 +2,41 @@ import java.io.*;
 import java.net.*;
 
 public class ChatBotClient {
-
     public static void main(String[] args) {
-        try (Socket socket = new Socket("localhost", 55555)) {
-            System.out.println("Conectado ao ChatBot!");
+        String host = "localhost"; // ou o IP do servidor
+        int port = 55555; // Porta do servidor
 
-            // Criar streams para comunicação
-            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        while (true) { // Loop para permitir reconexão
+            try (Socket socket = new Socket(host, port)) {
+                BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+                PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+                BufferedReader consoleInput = new BufferedReader(new InputStreamReader(System.in));
 
-            BufferedReader teclado = new BufferedReader(new InputStreamReader(System.in));
+                String userInput;
 
-            String mensagem;
-            while (true) {
-                System.out.print("Digite sua pergunta (ou 'Sair' para encerrar): ");
-                mensagem = teclado.readLine();
+                System.out.println("Conectado ao ChatBot! Digite suas perguntas ou 'sair' para desconectar.");
 
-                if (mensagem.equalsIgnoreCase("Sair")) {
-                    break;
+                while (true) {
+                    System.out.print("Você: ");
+                    userInput = consoleInput.readLine();
+
+                    // Enviar a pergunta para o servidor
+                    out.println(userInput);
+
+                    // Receber e imprimir a resposta do servidor
+                    String response = in.readLine();
+                    System.out.println("ChatBot: " + response);
+
+                    // Verificar se o usuário quer sair
+                    if ("sair".equalsIgnoreCase(userInput)) {
+                        break; // Encerra o loop e desconecta
+                    }
                 }
-
-                out.println(mensagem);
-
-                String resposta = in.readLine();
-                System.out.println("ChatBot: " + resposta);
+            } catch (IOException e) {
+                System.err.println("Erro ao conectar ao servidor: " + e.getMessage());
+                break; // Sai do loop se houver um erro de conexão
             }
-        } catch (IOException e) {
-            System.err.println("Erro na comunicação " + e + " : " + e.getMessage());
-            e.printStackTrace();
         }
+        System.out.println("Cliente encerrado.");
     }
 }
