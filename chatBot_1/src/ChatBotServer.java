@@ -7,10 +7,10 @@ public class ChatBotServer {
     private static HashMap<String, String> respostas; //mapear respostas
     public static void inicializarRespostas() { //processamento de perguntas e respostas
         respostas = new HashMap<>();
-        respostas.put("Tudo bem?", "Sim, tudo ótimo!");
-        respostas.put("Quais filmes hoje?", "Hoje, está em cartaz o filme da Patrulha Canina.");
-        respostas.put("Quanto custa o Aerolin?", "O Aerolin custa R$29,00.");
-        respostas.put("Sair", "Obrigado por utilizar nosso sistema!");    }
+        respostas.put("tudo bem?", "Sim, tudo ótimo!");
+        respostas.put("quais filmes hoje?", "Hoje, está em cartaz o filme da Patrulha Canina.");
+        respostas.put("quanto custa o aerolin?", "O Aerolin custa R$29,00.");
+        respostas.put("sair", "Obrigado por utilizar nosso sistema!");    }
 
     public static void main(String[] args) {
         inicializarRespostas();
@@ -29,6 +29,7 @@ public class ChatBotServer {
 
                 java.lang.String perguntaCliente;
                 while ((perguntaCliente = in.readLine()) != null) {
+                    perguntaCliente = perguntaCliente.toLowerCase().trim();
                     System.out.println("Cliente: " + perguntaCliente);
 
                     // Se a pergunta for "Sair", encerra a conexão
